@@ -1,7 +1,6 @@
 *~
 *.swp
 Makefile
-stack.yaml
 .stack-work
 dist
 /TAGS

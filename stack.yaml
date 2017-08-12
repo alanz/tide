@@ -1,0 +1,11 @@
+resolver: lts-9.0
+packages:
+- .
+- location:
+    git: https://github.com/alanz/happy.git
+    commit: 23e94c6ba592df7eb3c6f15c64e0b28fa8dc9faa
+  extra-dep: true
+
+extra-deps: []
+flags: {}
+extra-package-dbs: []

@@ -26,6 +26,20 @@ executable tide
   ghc-options:         -threaded
   default-language:    Haskell2010
 
+executable tide-play
+  main-is:             uiPlay.hs
+  -- other-modules:       
+  build-depends:       base
+                       , happy == 1.20.*
+                       , text
+                       , attoparsec
+                       , vector
+                       , fingertree
+                       , gtk3
+  hs-source-dirs:      ., src
+  ghc-options:         -threaded
+  default-language:    Haskell2010
+
 test-suite spec
   type:                exitcode-stdio-1.0
   main-is:             spec.hs
