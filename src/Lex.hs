@@ -1,3 +1,4 @@
+{-# LANGUAGE RankNTypes      #-}
 {-# LANGUAGE RecordWildCards #-}
 
 module Lex
@@ -103,6 +104,14 @@ step lex = (lex', Span startPos (endPos - startPos))
     let p = Atto.parse (tokenize lex s)
     in go txtBuf tBuf 0 TokenBuffer.empty p 0 (100 :: Int)
 
+  -- go :: forall s t. TextBuffer
+  --    -> TokenBuffer (Lex.T s t)
+  --    -> Int
+  --    -> TokenBuffer (Item s t)
+  --    -> (Text -> Atto.IResult Text (s, t))
+  --    -> Int
+  --    -> Int
+  --    -> (TokenBuffer (Item s t), TokenBuffer (Lex.T s t))
   go _ tBuf tOff res _ _ 0 =
     let (tBuf', _) = markDirty tBuf (Span 0 (tOff + 1)) 1
     in (res, tBuf')

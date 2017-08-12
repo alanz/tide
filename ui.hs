@@ -93,7 +93,7 @@ main = do
 
         clear span'
 
-      step = do 
+      step = do
         lex <- readIORef lexRef
         when (Lex.isDirty lex) $ do
           let (lex', span) = Lex.step lex
