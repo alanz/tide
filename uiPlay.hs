@@ -7,9 +7,11 @@ where
 
 import qualified TextBuffer
 import qualified TokenBuffer
-import qualified HaskellLex
+-- import qualified HaskellLex
+import qualified PlayLex
 import qualified Lex
 import Span
+import qualified Play
 
 import Prelude hiding (lex, span)
 import Data.Text (Text)
@@ -40,36 +42,29 @@ main = do
   set scrolledWindow [containerChild := textView]
   set window [containerChild := scrolledWindow]
 
-  lexRef <- newIORef (Lex.empty HaskellLex.initialState HaskellLex.next)
+  -- lexRef <- newIORef (Lex.empty HaskellLex.initialState HaskellLex.next)
+  lexRef <- newIORef (Lex.empty PlayLex.initialState PlayLex.next)
 
   buffer <- textViewGetBuffer textView
 
   do
     tagTable <- textBufferGetTagTable buffer
 
-    reservedIdTag <- textTagNew (Just "reservedid")
-    set reservedIdTag [textTagForeground := ("green" :: Text)]
-    textTagTableAdd tagTable reservedIdTag
-
-    reservedOpTag <- textTagNew (Just "reservedop")
-    set reservedOpTag [textTagForeground := ("#FFCC00" :: Text)]
-    textTagTableAdd tagTable reservedOpTag
-
-    specialTag <- textTagNew (Just "special")
-    set specialTag [textTagForeground := ("#FFCC00" :: Text)]
-    textTagTableAdd tagTable specialTag
-
-    varSymTag <- textTagNew (Just "varsym")
-    set varSymTag [textTagForeground := ("#FFCC00" :: Text)]
-    textTagTableAdd tagTable varSymTag
-
-    litTag <- textTagNew (Just "lit")
-    set litTag [textTagForeground := ("red" :: Text)]
-    textTagTableAdd tagTable litTag
-
-    commentTag <- textTagNew (Just "comment")
-    set commentTag [textTagForeground := ("gray" :: Text)]
-    textTagTableAdd tagTable commentTag
+    let
+      table :: [(TagName,Text)]
+      table =
+          [ ("tokena" ,"green")
+          , ("tokenbl","violet")
+          , ("tokenbu","orange")
+          , ("tokenbd","pink")
+          , ("tokenbD","red")
+          , ("tokenc" ,"blue")
+          , ("comment","gray")
+          ]
+    forM_ table $ \(tagName, fgColour) -> do
+      reservedIdTag <- textTagNew (Just tagName)
+      set reservedIdTag [textTagForeground := fgColour]
+      textTagTableAdd tagTable reservedIdTag
 
   updateVar <- newEmptyMVar
 
@@ -137,14 +132,15 @@ main = do
         hl _ Left{} = return ()
         hl pos (Right i) = do
           let maybe_tag = case Lex.token i of
-                HaskellLex.ReservedId{} -> Just ("reservedid" :: Text)
-                HaskellLex.ReservedOp{} -> Just "reservedop"
-                HaskellLex.Special{} -> Just "special"
-                HaskellLex.VarSym{} -> Just "varsym"
-                HaskellLex.Lit{} -> Just "lit"
-                HaskellLex.White (HaskellLex.Comment _) -> Just "comment"
-                HaskellLex.White (HaskellLex.CommentStart _) -> Just "comment"
-                HaskellLex.White (HaskellLex.CommentEnd _) -> Just "comment"
+                PlayLex.TokenA  -> Just ("tokena" :: Text)
+                PlayLex.TokenBL -> Just "tokenbl"
+                PlayLex.TokenBU -> Just "tokenbu"
+                PlayLex.TokenBd -> Just "tokenbd"
+                PlayLex.TokenBD -> Just "tokenbD"
+                PlayLex.TokenC  -> Just "tokenc"
+                PlayLex.White (PlayLex.Comment _)      -> Just "comment"
+                PlayLex.White (PlayLex.CommentStart _) -> Just "comment"
+                PlayLex.White (PlayLex.CommentEnd _)   -> Just "comment"
                 _ -> Nothing
           case maybe_tag of
             Nothing -> return ()

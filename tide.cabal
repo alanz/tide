@@ -28,14 +28,18 @@ executable tide
 
 executable tide-play
   main-is:             uiPlay.hs
-  -- other-modules:       
+  other-modules:       Play
   build-depends:       base
-                       , happy == 1.20.*
-                       , text
+                       , array == 0.5.1.*
                        , attoparsec
-                       , vector
+                       , containers == 0.5.7.*
                        , fingertree
                        , gtk3
+                       , prettyprinter == 1.1.*
+                       , prettyprinter-ansi-terminal == 1.1.*
+                       , text
+                       , vector
+  build-tools: happy == 1.20.*
   hs-source-dirs:      ., src
   ghc-options:         -threaded
   default-language:    Haskell2010
