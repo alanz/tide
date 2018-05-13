@@ -1,8 +1,8 @@
 *~
 *.swp
-Makefile
 .stack-work
 dist
-/TAGS
-/.ghci
-/Play.info
+TAGS
+.ghci
+Play.info
+cabal-helper*
