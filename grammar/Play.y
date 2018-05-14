@@ -134,4 +134,7 @@ lexer' (unk:cs) = error $ "lexer' failure on char " ++ show unk
 -- Main entry point. "calc" is the parser entry point generated above
 /* main = getContents >>= print . calc . lexer */
 
+parse str = drawParse $ calc $ lexer str
+
+drawParse ll = putStrLn $ drawTree $ fmap showHere ll
 }
