@@ -45,7 +45,7 @@ Root : A Bs C { Root $2 }
 A : 'a'           { () }
   | {- nothing -} { () }
 
-Bs : listb(B)       { toList $1 }
+Bs : lista(B)       { toList $1 }
 
 B : 'b'            { BL }
   | 'B'            { BU }
@@ -69,8 +69,6 @@ rev_list1(p)    : p                   { [$1] }
 
 -- -----------------------------
 
-listb(p)         : lista(p)           { $1 }
-
 lista(p)        : listb(p)            { $1 }
                 |                     { BEmpty }
 
@@ -78,6 +76,18 @@ listb(p)        : p                   { BSingle $1 }
                 | listb(p) listb(p)   { BDouble $1 $2 }
 
 {-
+
+s = L*
+
+becomes
+
+s = B
+
+B = L
+  | B B
+
+-------
+
 s : A
 
 A : B
