@@ -19,6 +19,7 @@ stdenv.mkDerivation {
     nix bash binutils coreutils curl gnutar
     gnumake
     happy_private
+    haskellPackages.alex
     cabal-install
     ghc
   ];

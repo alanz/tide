@@ -11,18 +11,26 @@ import Data.Tree
 import qualified Data.Bits as Bits
 import Data.Text.Prettyprint.Doc
 import Data.Text.Prettyprint.Doc.Render.Terminal
+
+import Lexer
 }
+
+%expect 4 -- shift/reduce conflicts
 
 %name calc
 %tokentype { Token }
 %error { parseError }
 
+-- %monad { P } { >>= } { return }
+-- %lexer { (lexer ) } { ITeof }
+
+
 %token
       'a'             { TokenA }
       'b'             { TokenBL }
       'B'             { TokenBU }
-      'd'             { TokenBd }
-      'D'             { TokenBD }
+      'd'             { TokenDL }
+      'D'             { TokenDU }
       'c'             { TokenC }
 
 %%
@@ -115,17 +123,7 @@ data Root = Root [B]
 data B = BL | BU | Bd | BD
      deriving Show
 
-data Token
-      = TokenA
-      | TokenBL
-      | TokenBU
-      | TokenBd
-      | TokenBD
-      | TokenC
- deriving Show
-
-
-
+{-
 -- lexer :: String -> [HappyInput]
 lexer str = [mkTokensNode (lexer' str)]
 
@@ -135,16 +133,19 @@ lexer' (c:cs)
 lexer' ('a':cs) = mkTok TokenA  : lexer' cs
 lexer' ('b':cs) = mkTok TokenBL : lexer' cs
 lexer' ('B':cs) = mkTok TokenBU : lexer' cs
-lexer' ('d':cs) = mkTok TokenBd : lexer' cs
-lexer' ('D':cs) = mkTok TokenBD : lexer' cs
+lexer' ('d':cs) = mkTok TokenDL : lexer' cs
+lexer' ('D':cs) = mkTok TokenDU : lexer' cs
 lexer' ('c':cs) = mkTok TokenC  : lexer' cs
 lexer' (unk:cs) = error $ "lexer' failure on char " ++ show unk
+-}
 
+-- lexer :: String -> [HappyInput]
+lexerFunc str = [mkTokensNode (map mkTok $ lexString' str)]
 
 -- Main entry point. "calc" is the parser entry point generated above
 /* main = getContents >>= print . calc . lexer */
 
-parse str = drawParse $ calc $ lexer str
+parse str = drawParse $ calc $ lexerFunc str
 
 drawParse ll = putStrLn $ drawTree $ fmap showHere ll
 }

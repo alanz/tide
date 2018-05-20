@@ -12,6 +12,8 @@ import Data.Tree
 import qualified Data.Bits as Bits
 import Data.Text.Prettyprint.Doc
 import Data.Text.Prettyprint.Doc.Render.Terminal
+
+import Lexer
 import qualified Data.Array as Happy_Data_Array
 import qualified Data.Bits as Bits
 import qualified GHC.Exts as Happy_GHC_Exts
@@ -240,8 +242,8 @@ happyNewToken verifying action sts stk (t:ts) =
 		TokenA -> cont 12# (setTerminals t (Tok 12# tk:tks)) ((setTerminals t tks):ts);
 		TokenBL -> cont 13# (setTerminals t (Tok 13# tk:tks)) ((setTerminals t tks):ts);
 		TokenBU -> cont 14# (setTerminals t (Tok 14# tk:tks)) ((setTerminals t tks):ts);
-		TokenBd -> cont 15# (setTerminals t (Tok 15# tk:tks)) ((setTerminals t tks):ts);
-		TokenBD -> cont 16# (setTerminals t (Tok 16# tk:tks)) ((setTerminals t tks):ts);
+		TokenDL -> cont 15# (setTerminals t (Tok 15# tk:tks)) ((setTerminals t tks):ts);
+		TokenDU -> cont 16# (setTerminals t (Tok 16# tk:tks)) ((setTerminals t tks):ts);
 		TokenC -> cont 17# (setTerminals t (Tok 17# tk:tks)) ((setTerminals t tks):ts);
 		_ -> happyError' ((t:ts), [])
 		};
@@ -295,17 +297,7 @@ data Root = Root [B]
 data B = BL | BU | Bd | BD
      deriving Show
 
-data Token
-      = TokenA
-      | TokenBL
-      | TokenBU
-      | TokenBd
-      | TokenBD
-      | TokenC
- deriving Show
-
-
-
+{-
 -- lexer :: String -> [HappyInput]
 lexer str = [mkTokensNode (lexer' str)]
 
@@ -315,16 +307,19 @@ lexer' (c:cs)
 lexer' ('a':cs) = mkTok TokenA  : lexer' cs
 lexer' ('b':cs) = mkTok TokenBL : lexer' cs
 lexer' ('B':cs) = mkTok TokenBU : lexer' cs
-lexer' ('d':cs) = mkTok TokenBd : lexer' cs
-lexer' ('D':cs) = mkTok TokenBD : lexer' cs
+lexer' ('d':cs) = mkTok TokenDL : lexer' cs
+lexer' ('D':cs) = mkTok TokenDU : lexer' cs
 lexer' ('c':cs) = mkTok TokenC  : lexer' cs
 lexer' (unk:cs) = error $ "lexer' failure on char " ++ show unk
+-}
 
+-- lexer :: String -> [HappyInput]
+lexerFunc str = [mkTokensNode (map mkTok $ lexString' str)]
 
 -- Main entry point. "calc" is the parser entry point generated above
 /* main = getContents >>= print . calc . lexer */
 
-parse str = drawParse $ calc $ lexer str
+parse str = drawParse $ calc $ lexerFunc str
 
 drawParse ll = putStrLn $ drawTree $ fmap showHere ll
 {-# LINE 1 "templates/IncrementalTemplate.hs" #-}
